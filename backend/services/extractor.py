@@ -1,14 +1,15 @@
 import re
-from pydantic import BaseModel
-from models.cv_result import CVResult
+from models.cv_result import CvResult
+import unidecode
 
 ## Variables globales
 EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}") # email regex 
 PHONE_RE = re.compile(r"(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{1,4}\)?[\s.-]?)?(?:\d[\d\s.-]{5,}\d)") ## phone number
 DEGREE_KEYWORDS = ["master", "licence", "bachelor", "ingenieur", "ingénieur", "doctorat", "phd", "msc", "bsc", "diplôme"] # liste des mots-clés possibles pour les diplômes
 
-class Extractor(BaseModel):
-    result = CVResult()
+class Extractor:
+    def __init__(self):
+        self.result = CvResult()
 
     def extract_email(self, text: str):
         m = EMAIL_RE.search(text)
@@ -49,9 +50,18 @@ class Extractor(BaseModel):
                     self.result.last_name = parts[1]
                 return   
             
+    ### fonction de normalisation du texte
+    def normalize_text(self, text: str) -> str:
+        text = text.lower()
+        text = " ".join(text.split())
+        text = unidecode.unidecode(text)
+        
+        return text
+    
+    ## Extraire toutes les informations
     def extract_all(self, full_text: str):
 
-        normalized = normalize_text(full_text)
+        normalized = self.normalize_text(full_text)
         text_flat = normalized.replace("\n", " ")
         first_page = "\n".join(full_text.splitlines()[:10])
 
@@ -63,14 +73,3 @@ class Extractor(BaseModel):
         self.extract_degree(full_text)
         self.extract_name(first_page)
         return self.result
-    
-
-### fonction de normalisation du texte
-import unidecode
-
-def normalize_text(text: str) -> str:
-    text = text.lower()
-    text = " ".join(text.split())
-    text = unidecode.unidecode(text)
-    
-    return text
