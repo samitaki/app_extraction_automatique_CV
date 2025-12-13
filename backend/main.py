@@ -20,13 +20,9 @@ async def upload_cv(file: UploadFile = File(...)):
     if file.filename.endswith('.pdf'):
         text = parse_pdf(content)
     elif file.filename.endswith('.docx'):
-        text = parse_docx(content)
-    
-    # Normaliser le texte extrait
-    cleaned_text = extractor.normalize_text(text)
-    
+        text = parse_docx(content)    
     # Extraire les informations (email, téléphone, etc.)
-    result = extractor.extract_all(cleaned_text)
+    result = extractor.extract_all(text)
     
     # Retourner le résultat au frontend
     return result

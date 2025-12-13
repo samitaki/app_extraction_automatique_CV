@@ -64,6 +64,7 @@ class Extractor:
         normalized = self.normalize_text(full_text)
         text_flat = normalized.replace("\n", " ")
         first_page = "\n".join(full_text.splitlines()[:10])
+        print(len(full_text.splitlines()))
 
         ## Pour email et phone, on utilise le texte aplati (sans sauts de ligne)
         self.extract_email(text_flat)
