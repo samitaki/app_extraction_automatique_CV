@@ -45,15 +45,32 @@ class Extractor(BaseModel):
                     self.result.first_name = parts[0]
                     self.result.last_name = " ".join(parts[1:])
                 else: 
-                    self.result.first_name = parts[0]
+                    self.result.first_name = parts[0]       
                     self.result.last_name = parts[1]
                 return   
             
     def extract_all(self, full_text: str):
-        # Consider only the first 10 lines for name extraction
+
+        normalized = normalize_text(full_text)
+        text_flat = normalized.replace("\n", " ")
         first_page = "\n".join(full_text.splitlines()[:10])
-        self.extract_email(full_text)
-        self.extract_phone(full_text)
+
+        ## Pour email et phone, on utilise le texte aplati (sans sauts de ligne)
+        self.extract_email(text_flat)
+        self.extract_phone(text_flat)
+
+        ## Pour le diplôme et le nom, on utilise le texte complet avec sauts de ligne
         self.extract_degree(full_text)
         self.extract_name(first_page)
         return self.result
+    
+
+### fonction de normalisation du texte
+import unidecode
+
+def normalize_text(text: str) -> str:
+    text = text.lower()
+    text = " ".join(text.split())
+    text = unidecode.unidecode(text)
+    
+    return text
