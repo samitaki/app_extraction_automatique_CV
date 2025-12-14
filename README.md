@@ -1,4 +1,3 @@
-```markdown
 # CV Extractor
 
 Extraction automatique d'informations depuis des CV (PDF/DOCX) par règles et regex.
@@ -103,7 +102,7 @@ curl -X POST "http://localhost:8000/api/v1/upload-cv" \
 ## Tests
 
 ```bash
-cd backend
+cd backend/tests
 pytest -v
 ```
 
@@ -112,4 +111,3 @@ pytest -v
 - Extraction par regex uniquement (pas d'IA)
 - Communication Docker via variable `BACKEND_URL`
 - Architecture backend/frontend découplée
-```
